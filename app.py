@@ -235,6 +235,12 @@ if "usuario" not in st.session_state:
     st.session_state.usuario = None
 
 if not st.session_state.logado:
+    st.write("🔧 DEBUG: Testando conexão...")
+    try:
+        test_df = ler_aba("usuarios")
+        st.success(f"✅ Aba 'usuarios' lida com sucesso: {len(test_df)} registros")
+    except Exception as e:
+        st.error(f"❌ Erro ao ler aba: {e}")
     token_do_cookie = cookie_manager.get("seindec_token")
 
     if token_do_cookie:
