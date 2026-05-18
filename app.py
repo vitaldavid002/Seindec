@@ -261,9 +261,10 @@ if not st.session_state.logado:
                 u_reg = st.text_input("Novo Usuário (sem espaços)")
                 s_reg = st.text_input("Nova Senha", type="password")
                 s_conf = st.text_input("Confirme a Senha", type="password")
+                c_reg = st.text_input("Código de Administrador")
                 if st.form_submit_button("Cadastrar"):
                     df_u = ler_aba("usuarios")
-                    if not n_reg or not u_reg or not s_reg:
+                    if not n_reg or not u_reg or not s_reg or not c_reg:
                         st.warning("Preencha todos os campos.")
                     elif n_reg in df_u["nome_completo"].values:
                         st.error("Este nome já está cadastrado.")
@@ -271,6 +272,8 @@ if not st.session_state.logado:
                         st.error("Este usuário já existe.")
                     elif s_reg != s_conf:
                         st.error("As senhas não coincidem.")
+                    elif c_reg != "procon@723_arap0":
+                        st.error("Código incorreto.")
                     else:
                         novo_id = gerar_id_unico()
                         # FIX: Usar hash_senha ao registrar
