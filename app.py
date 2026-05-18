@@ -744,9 +744,17 @@ elif menu == "Pesquisa Avancada":
 st.markdown("""
 <style>
     .main { padding-bottom: 40px; }
-    footer { position: fixed; left: 0; bottom: 0; width: 100%; text-align: center; 
-             color: #888; font-size: 12px; background-color: #f0f2f6; padding: 10px; }
+    footer { 
+        position: fixed; 
+        left: 0; 
+        bottom: 0; 
+        width: 100%; 
+        text-align: center; 
+        color: var(--text-color);
+        font-size: 12px; 
+        background-color: var(--secondary-background-color);
+        padding: 10px; 
+    }
 </style>
 <footer>Seindec AL - PROCON Arapiraca</footer>
 """, unsafe_allow_html=True)
-
