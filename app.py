@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
-import time
 from datetime import datetime, timedelta, timezone
 import secrets
 import re
@@ -40,10 +39,24 @@ def verificar_senha(senha, hash_armazenado):
     """Verifica se a senha corresponde ao hash"""
     return hash_senha(senha) == hash_armazenado
 
+def _get_gsheet_client():
+    """Retorna cliente gspread autenticado (evita repetição)"""
+    creds_dict = st.secrets.to_dict()["connections"]["gsheets"]
+    scope = ["https://www.googleapis.com/auth/spreadsheets"]
+    creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+    return gspread.authorize(creds)
+
+def _get_worksheet(nome_aba):
+    """Retorna worksheet da aba (reutiliza autenticação)"""
+    client = _get_gsheet_client()
+    spreadsheet_id = st.secrets["connections"]["gsheets"]["spreadsheet"]
+    sheet = client.open_by_key(spreadsheet_id)
+    return sheet.worksheet(nome_aba)
+
 # --- CACHE OTIMIZADO COM TTL E TAGS ---
 @st.cache_data(ttl=300)
 def ler_aba(nome_aba):
-    """Lê dados da aba usando gspread (mais confiável)"""
+    """Lê dados da aba usando gspread"""
     estruturas = {
         "usuarios": ["id", "nome_completo", "login", "senha_hash"],
         "processos": ["id", "numero", "consumidor", "cpf_consumidor",
@@ -57,36 +70,15 @@ def ler_aba(nome_aba):
     colunas_esperadas = estruturas.get(nome_aba, [])
 
     try:
-        # Pega as credenciais do secrets
-        creds_dict = st.secrets.to_dict()["connections"]["gsheets"]
-        
-        # Autentica
-        scope = ["https://www.googleapis.com/auth/spreadsheets"]
-        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
-        client = gspread.authorize(creds)
-        
-        # Abre a planilha
-        spreadsheet_id = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        sheet = client.open_by_key(spreadsheet_id)
-        
-        # Acessa a aba
-        worksheet = sheet.worksheet(nome_aba)
-        
-        # Lê os dados
+        worksheet = _get_worksheet(nome_aba)
         dados = worksheet.get_all_values()
         
         if not dados or len(dados) < 1:
-            # Se vazio, retorna DataFrame com estrutura correta
             return pd.DataFrame(columns=colunas_esperadas)
         
-        # Primeira linha é cabeçalho
         colunas = [col.strip().lower() for col in dados[0]]
-        linhas = dados[1:]
+        df = pd.DataFrame(dados[1:], columns=colunas)
         
-        # Cria DataFrame
-        df = pd.DataFrame(linhas, columns=colunas)
-        
-        # Garante colunas esperadas existem
         for col in colunas_esperadas:
             if col not in df.columns:
                 df[col] = ""
@@ -94,42 +86,21 @@ def ler_aba(nome_aba):
         return df
         
     except Exception as e:
-        st.warning(f"⚠️ Erro ao ler aba '{nome_aba}': {e}")
+        st.warning(f"⚠️ Erro ao ler '{nome_aba}': {e}")
         return pd.DataFrame(columns=colunas_esperadas)
-
 
 
 # --- HELPER para salvar com gspread ---
 def salvar_dados(nome_aba, df_novo):
-    """Salva dados usando gspread (mais confiável)"""
+    """Salva dados no Google Sheets"""
     try:
-        # Pega as credenciais do secrets
-        creds_dict = st.secrets.to_dict()["connections"]["gsheets"]
-        
-        # Autentica
-        scope = ["https://www.googleapis.com/auth/spreadsheets"]
-        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
-        client = gspread.authorize(creds)
-        
-        # Abre a planilha
-        spreadsheet_id = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        sheet = client.open_by_key(spreadsheet_id)
-        
-        # Acessa a aba
-        worksheet = sheet.worksheet(nome_aba)
-        
-        # Limpa a aba (exceto cabeçalho)
+        worksheet = _get_worksheet(nome_aba)
         worksheet.clear()
-        
-        # Escreve os dados
         worksheet.append_rows(
             [df_novo.columns.tolist()] + df_novo.values.tolist(),
             value_input_option="RAW"
         )
-        
-        # Limpa o cache
         st.cache_data.clear()
-        
     except Exception as e:
         st.error(f"❌ Erro ao salvar: {str(e)}")
 
@@ -234,28 +205,15 @@ def encerrar_sessao():
     st.session_state.usuario = None
     st.rerun()
 
-# 1. Lê a aba de usuários (como a função tem cache, isso será super rápido)
-df_usuarios = ler_aba("usuarios")
-
-# 2. Pega o login salvo na sessão atual
-login_atual = st.session_state.usuario
-
-# 3. Filtra o DataFrame para achar a linha específica desse usuário
-linha_usuario = df_usuarios[df_usuarios["login"] == login_atual]
-
-# 4. Verifica se encontrou o usuário para extrair o nome completo de forma segura
-if not linha_usuario.empty:
-    # Pega o valor da coluna 'nome_completo' do primeiro resultado encontrado
-    nome_exibicao = linha_usuario.iloc[0]["nome_completo"]
+# ✅ LAZY LOAD: só carrega se logado
+if st.session_state.logado and st.session_state.usuario:
+    df_usuarios = ler_aba("usuarios")
+    linha_usuario = df_usuarios[df_usuarios["login"] == st.session_state.usuario]
+    nome_exibicao = linha_usuario.iloc[0]["nome_completo"] if not linha_usuario.empty else st.session_state.usuario
 else:
-    # Fallback de segurança: se por acaso não achar na planilha, mostra o login mesmo
-    nome_exibicao = login_atual
+    nome_exibicao = ""
 
 # --- INITIALIZE SESSION STATE ---
-if "logado" not in st.session_state:
-    st.session_state.logado = False
-if "usuario" not in st.session_state:
-    st.session_state.usuario = None
 
 if not st.session_state.logado:
     token_do_cookie = cookie_manager.get("seindec_token")
@@ -281,8 +239,8 @@ if not st.session_state.logado:
                         st.error("Usuário ou senha incorretos.")
                     else:
                         # FIX: Usar coluna correta (senha_hash) e verificar com hash
-                        col_login = "login" if "login" in df_u.columns else "login"
-                        col_senha = "senha_hash" if "senha_hash" in df_u.columns else "senha"
+                        col_login = "login"
+                        col_senha = "senha_hash"
                         
                         user_row = df_u[df_u[col_login] == u_log]
                         if not user_row.empty:
