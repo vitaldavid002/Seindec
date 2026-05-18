@@ -1,7 +1,6 @@
 streamlit
 st-gsheets-connection
 pandas
-time
 streamlit-cookies-controller
 extra-streamlit-components
 openpyxl
