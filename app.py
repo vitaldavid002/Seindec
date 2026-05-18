@@ -7,6 +7,9 @@ import re
 import extra_streamlit_components as stx
 import hashlib
 import uuid
+import gspread
+from google.oauth2.service_account import Credentials
+
 
 # --- CONFIGURACAO DO FUSO HORARIO BRASILIA ---
 FUSO_BR = timezone(timedelta(hours=-3))
@@ -72,14 +75,40 @@ def ler_aba(nome_aba):
     return pd.DataFrame(columns=colunas_esperadas)
 
 
+
+# --- HELPER para salvar com gspread ---
 def salvar_dados(nome_aba, df_novo):
-    """Salva dados e invalida cache específico"""
+    """Salva dados usando gspread (mais confiável)"""
     try:
-        conn.update(worksheet=nome_aba, data=df_novo)
-        # Invalidar cache APENAS desta aba usando tags
+        # Pega as credenciais do secrets
+        creds_dict = st.secrets.to_dict()["connections"]["gsheets"]
+        
+        # Autentica
+        scope = ["https://www.googleapis.com/auth/spreadsheets"]
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+        client = gspread.authorize(creds)
+        
+        # Abre a planilha
+        spreadsheet_id = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        sheet = client.open_by_key(spreadsheet_id)
+        
+        # Acessa a aba
+        worksheet = sheet.worksheet(nome_aba)
+        
+        # Limpa a aba (exceto cabeçalho)
+        worksheet.clear()
+        
+        # Escreve os dados
+        worksheet.append_rows(
+            [df_novo.columns.tolist()] + df_novo.values.tolist(),
+            value_input_option="RAW"
+        )
+        
+        # Limpa o cache
         st.cache_data.clear()
+        
     except Exception as e:
-        st.error(f"❌ Erro ao salvar: {e}")
+        st.error(f"❌ Erro ao salvar: {str(e)}")
 
 def gerar_id_unico():
     """Gera ID único usando UUID para evitar duplicatas"""
