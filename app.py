@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
+import time
 from datetime import datetime, timedelta, timezone
 import secrets
 import re
@@ -582,6 +583,8 @@ def exibir_processo(p, df_p_master, df_h_master, chave):
 # =====================================================================
 menu = st.session_state.pagina_atual
 
+import time
+
 if menu == "Cadastrar Processo":
     st.header("📄 Novo Cadastro de Processo")
     
@@ -608,13 +611,10 @@ if menu == "Cadastrar Processo":
                 nf_final = ";".join([nf for nf in form_data["nome_fantasia_fornecedor"] if nf.strip()])
                 rs_final = ";".join([rs for rs in form_data["razao_social_fornecedor"] if rs.strip()])
                 cnpj_final = ";".join([c for c in form_data["cnpj_fornecedor"] if c.strip()])
-
                 df_p = ler_aba("processos")
                 df_h = ler_aba("historico")
                 
-                # FIX: Usar gerar_id_unico() para evitar colisões
                 p_id = gerar_id_unico()
-
                 novo_p = pd.DataFrame([{
                     "id": p_id, 
                     "numero": form_data["numero"], 
@@ -634,10 +634,17 @@ if menu == "Cadastrar Processo":
                     "usuario_responsavel": nome_exibicao,
                     "data_mudanca": datetime.now(FUSO_BR).strftime("%d/%m/%Y %H:%M")
                 }])
-
+                
                 salvar_dados("processos", pd.concat([df_p, novo_p], ignore_index=True))
                 salvar_dados("historico", pd.concat([df_h, novo_h], ignore_index=True))
+                
+                # ✅ EXIBE A MENSAGEM
                 st.success("✅ Processo salvo com sucesso!")
+                
+                # ✅ AGUARDA 2 SEGUNDOS PARA VER A MENSAGEM
+                time.sleep(2)
+                
+                # ✅ DEPOIS RESETA E FAZ RERUN
                 st.session_state.n_forn = 1
                 st.rerun()
 
