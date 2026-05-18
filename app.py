@@ -750,8 +750,3 @@ st.markdown("""
 <footer>Seindec AL - PROCON Arapiraca</footer>
 """, unsafe_allow_html=True)
 
-# ===== DEBUG TEMPORARIO =====
-st.write("---DEBUG---")
-df_test = ler_aba("usuarios")
-st.write(f"Usuários encontrados: {len(df_test)}")
-st.write(df_test)
