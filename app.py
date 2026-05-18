@@ -42,7 +42,7 @@ def verificar_senha(senha, hash_armazenado):
 # --- CACHE OTIMIZADO COM TTL E TAGS ---
 @st.cache_data(ttl=300)
 def ler_aba(nome_aba):
-    # Mapeamento oficial das colunas que cada aba DEVE possuir
+    """Lê dados da aba usando gspread (mais confiável)"""
     estruturas = {
         "usuarios": ["id", "nome_completo", "login", "senha_hash"],
         "processos": ["id", "numero", "consumidor", "cpf_consumidor",
@@ -56,23 +56,45 @@ def ler_aba(nome_aba):
     colunas_esperadas = estruturas.get(nome_aba, [])
 
     try:
-        df = conn.read(worksheet=nome_aba, ttl=0)
-        if df is not None and not df.empty:
-            # 1. Remove espaços nas pontas e força tudo para letras minúsculas
-            df.columns = df.columns.astype(str).str.strip().str.lower()
-            
-            # 2. Garante que mesmo se alguém apagar uma coluna no Sheets, o app cria ela vazia
-            for col in colunas_esperadas:
-                if col not in df.columns:
-                    df[col] = ""
-                    
-            return df.dropna(how="all")
-    except Exception:
-        # Entra aqui apenas se houver erro crítico de conexão ou ausência da aba
-        pass
+        # Pega as credenciais do secrets
+        creds_dict = st.secrets.to_dict()["connections"]["gsheets"]
         
-    # Retorna um DataFrame vazio com a estrutura correta caso a planilha esteja zerada ou falhe
-    return pd.DataFrame(columns=colunas_esperadas)
+        # Autentica
+        scope = ["https://www.googleapis.com/auth/spreadsheets"]
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+        client = gspread.authorize(creds)
+        
+        # Abre a planilha
+        spreadsheet_id = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        sheet = client.open_by_key(spreadsheet_id)
+        
+        # Acessa a aba
+        worksheet = sheet.worksheet(nome_aba)
+        
+        # Lê os dados
+        dados = worksheet.get_all_values()
+        
+        if not dados or len(dados) < 1:
+            # Se vazio, retorna DataFrame com estrutura correta
+            return pd.DataFrame(columns=colunas_esperadas)
+        
+        # Primeira linha é cabeçalho
+        colunas = [col.strip().lower() for col in dados[0]]
+        linhas = dados[1:]
+        
+        # Cria DataFrame
+        df = pd.DataFrame(linhas, columns=colunas)
+        
+        # Garante colunas esperadas existem
+        for col in colunas_esperadas:
+            if col not in df.columns:
+                df[col] = ""
+        
+        return df
+        
+    except Exception as e:
+        st.warning(f"⚠️ Erro ao ler aba '{nome_aba}': {e}")
+        return pd.DataFrame(columns=colunas_esperadas)
 
 
 
@@ -235,12 +257,6 @@ if "usuario" not in st.session_state:
     st.session_state.usuario = None
 
 if not st.session_state.logado:
-    st.write("🔧 DEBUG: Testando conexão...")
-    try:
-        test_df = ler_aba("usuarios")
-        st.success(f"✅ Aba 'usuarios' lida com sucesso: {len(test_df)} registros")
-    except Exception as e:
-        st.error(f"❌ Erro ao ler aba: {e}")
     token_do_cookie = cookie_manager.get("seindec_token")
 
     if token_do_cookie:
