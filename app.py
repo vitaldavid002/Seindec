@@ -539,6 +539,7 @@ def exibir_processo(p, df_p_master, df_h_master, chave):
                 df_p_copy.loc[mask, "cnpj_fornecedor"] = e_cnpj
                 df_p_copy.loc[mask, "tramitacao"] = e_tram
                 df_p_copy.loc[mask, "anotacoes"] = e_obs
+                df_p_copy = df_p_copy.reset_index(drop=True)
 
                 salvar_dados("processos", df_p_copy)
                 st.session_state[edit_key] = False
@@ -563,6 +564,7 @@ def exibir_processo(p, df_p_master, df_h_master, chave):
             # FIX: Fazer cópia segura antes de modificar
             df_p_copy = df_p_master.copy()
             df_p_copy.loc[df_p_copy["id"] == p["id"], "tramitacao"] = nova_t
+            df_p_copy = df_p_copy.reset_index(drop=True)
             
             n_h = pd.DataFrame([{
                 "id": gerar_id_unico(),
@@ -573,6 +575,7 @@ def exibir_processo(p, df_p_master, df_h_master, chave):
             }])
             
             df_h_copy = df_h_master.copy()
+            df_h_copy = df_h_copy.reset_index(drop=True)
             salvar_dados("processos", df_p_copy)
             salvar_dados("historico", pd.concat([df_h_copy, n_h], ignore_index=True))
             st.success("✅ Tramitação atualizada!")
