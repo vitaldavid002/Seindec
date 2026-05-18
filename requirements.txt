@@ -1,0 +1,10 @@
+streamlit
+st-gsheets-connection
+pandas
+streamlit-cookies-controller
+extra-streamlit-components
+openpyxl
+gspread
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
