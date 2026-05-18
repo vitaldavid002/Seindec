@@ -638,16 +638,14 @@ if menu == "Cadastrar Processo":
                 salvar_dados("processos", pd.concat([df_p, novo_p], ignore_index=True))
                 salvar_dados("historico", pd.concat([df_h, novo_h], ignore_index=True))
                 
-                st.success("✅ Processo salvo com sucesso!")
-                st.balloons()
-                
-                # ✅ LIMPA TODOS OS INPUTS DO FORMULÁRIO
-                for key in list(st.session_state.keys()):
-                    if key.startswith("new_"):
-                        del st.session_state[key]
+                # ✅ MOSTRA SUCESSO E REDIRECIONA
+                success_container = st.success("✅ Processo salvo com sucesso! Redirecionando...")
                 
                 time.sleep(2)
+                
+                # ✅ RESETA E NAVEGA PARA CONSULTAR
                 st.session_state.n_forn = 1
+                st.session_state.pagina_atual = "Consultar Processos"
                 st.rerun()
                 
 elif menu == "Consultar Processos":
