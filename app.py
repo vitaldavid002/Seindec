@@ -310,6 +310,7 @@ if not st.session_state.logado:
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
 
                     cookie_manager.delete("seindec_token")
+                    st.cache_data.clear()
                     st.session_state.tab_ativa = "login"
                     import time
                     time.sleep(2)
@@ -359,7 +360,7 @@ if not st.session_state.logado:
                             st.info("Você será redirecionado para o login em 2 segundos...")
                             
                             cookie_manager.delete("seindec_token")
-                                
+                            st.cache_data.clear()    
                             st.session_state.tab_ativa = "login"
                             
                             # Aguardar e recarregar a página
