@@ -313,6 +313,7 @@ if not st.session_state.logado:
                     salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
                     st.session_state.aba_ativa = 0
+                    st.session_state.clear()
 
 
                     import time
@@ -362,6 +363,7 @@ if not st.session_state.logado:
                             st.success("✅ Senha atualizada com sucesso! Agora faça login.")
                             st.info("Você será redirecionado para o login em 2 segundos...")
                             st.session_state.aba_ativa = 0
+                            st.session_state.clear()
                             
                             # Aguardar e recarregar a página
                             import time
