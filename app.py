@@ -243,7 +243,7 @@ if not st.session_state.logado:
     # Se não tem cookie ou sessão expirou, mostra formulário
     st.title("⚖️ Sistema Seindec Arapiraca")
 
-        tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
+    tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
         
         with tab_login:
             with st.form("form_login"):
