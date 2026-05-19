@@ -159,7 +159,7 @@ def criar_sessao(usuario):
     cookie_manager.set(
         "seindec_token",
         token,
-        expires_at=data_expira
+        expires_at=datetime.now(FUSO_BR) + timedelta(hours=SESSION_HORAS)
     )
 
     st.session_state.logado = True
@@ -217,12 +217,6 @@ def encerrar_sessao():
     st.cache_data.clear()
     st.rerun()
     
-    # ✅ Limpa a sessão sem tentar deletar o cookie
-    st.session_state.logado = False
-    st.session_state.usuario = None
-    st.cache_data.clear()
-    st.rerun()
-
 # ✅ LAZY LOAD: só carrega se logado
 if st.session_state.logado and st.session_state.usuario:
     df_usuarios = ler_aba("usuarios")
@@ -233,17 +227,21 @@ else:
 
 # --- INITIALIZE SESSION STATE ---
 
+# --- VERIFICAR SESSÃO EXISTENTE ---
 if not st.session_state.logado:
     token_do_cookie = cookie_manager.get("seindec_token")
 
     if token_do_cookie:
+        # ✅ Tenta recuperar usuário do cookie
         usuario_recuperado = verificar_sessao()
         if usuario_recuperado:
             st.session_state.logado = True
             st.session_state.usuario = usuario_recuperado
             st.rerun()
-    else:
-        st.title("⚖️ Sistema SIRDEC Arapiraca")
+        # Senão, mostra login
+    
+    # Se não tem cookie ou sessão expirou, mostra formulário
+    st.title("⚖️ Sistema Seindec Arapiraca")
 
         tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
         
