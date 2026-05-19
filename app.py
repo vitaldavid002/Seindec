@@ -225,7 +225,7 @@ if not st.session_state.logado:
             st.session_state.usuario = usuario_recuperado
             st.rerun()
     else:
-        st.title("⚖️ Sistema Seindec Arapiraca")
+        st.title("⚖️ Sistema SIRDEC Arapiraca")
 
         tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
         
