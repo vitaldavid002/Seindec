@@ -241,6 +241,12 @@ if not st.session_state.logado:
         # Senão, mostra login
     
     # Se não tem cookie ou sessão expirou, mostra formulário
+    st.set_page_config(layout="centered")
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+        st.image("assets/logo.png", use_container_width=True)
+            
     st.title("⚖️ Sistema Seindec Arapiraca")
 
     tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
