@@ -244,8 +244,8 @@ if not st.session_state.logado:
     st.set_page_config(layout="centered")
 
     col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-        st.image("assets/logo.png", use_container_width=True)
+    with col2:
+    st.image("assets/logo.png", use_container_width=True)
             
     st.title("⚖️ Sistema Seindec Arapiraca")
 
