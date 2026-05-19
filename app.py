@@ -60,7 +60,7 @@ def _get_worksheet(nome_aba):
 @st.cache_data(ttl=300)
     
 def ler_aba(nome_aba):
-    with st.spinner(f"⏳ Carregando {aba_nome}..."):
+        with st.spinner(f"⏳ Carregando {aba_nome}..."):
     """Lê dados da aba usando gspread"""
     estruturas = {
         "usuarios": ["id", "nome_completo", "login", "senha_hash"],
