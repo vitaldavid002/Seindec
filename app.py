@@ -306,6 +306,10 @@ def voltar_pagina():
 
 
 # 5. Exibe o título na barra lateral
+st.sidebaar.image(
+    "https://github.com/vitaldavid002/Seindec/blob/47bf1e5cbc74e75b6f8fe9561e26497915346121/assets/logo.png",
+    use_column_width=True
+)
 st.sidebar.title(f"👤 Olá, {nome_exibicao}")
 
 
