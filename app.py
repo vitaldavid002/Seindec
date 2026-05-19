@@ -245,7 +245,7 @@ if not st.session_state.logado:
 
     col1, col2, col3 = st.columns([2, 3, 2])
     with col2:
-        st.image("assets/logo_login2.png", use_container_width=True)
+        st.image("assets/logo_login1.png", use_container_width=True)
 
     tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
         
@@ -326,7 +326,7 @@ def voltar_pagina():
 
 
 # 5. Exibe o título na barra lateral
-st.sidebar.image("assets/logo.png", use_column_width=True)
+st.sidebar.image("assets/logo1.png", use_column_width=True)
 st.sidebar.title(f"👤 Olá, {nome_exibicao}")
 
 
