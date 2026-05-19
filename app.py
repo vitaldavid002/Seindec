@@ -70,7 +70,7 @@ def ler_aba(nome_aba):
         "historico": ["id", "processo_id", "tramitacao_texto", 
                       "usuario_responsavel", "data_mudanca"]
     }
-    with st.spinner(f"⏳ Carregando {aba_nome}..."):
+    st.spinner(f"⏳ Carregando {aba_nome}..."):
     colunas_esperadas = estruturas.get(nome_aba, [])
 
     try:
