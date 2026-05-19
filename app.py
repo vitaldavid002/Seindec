@@ -58,23 +58,10 @@ def _get_worksheet(nome_aba):
 
 # --- CACHE OTIMIZADO COM TTL E TAGS ---
 @st.cache_data(ttl=300)
-
-def ler_aba_otimizado(aba_nome):
-    """
-    Lê a aba do Google Sheets com:
-    - Spinner para esconder "run(ler_aba)"
-    - Cache para ser MUITO mais rápido
-    - TTL de 5 minutos
-    """
-    with st.spinner(f"⏳ Carregando {aba_nome}..."):
-        return ler_aba(aba_nome)
- 
-# ✨ FUNÇÃO AUXILIAR PARA LIMPAR CACHE
-def limpar_cache():
-    """Limpa o cache (use após criar/atualizar dados)"""
-    st.cache_data.clear()
     
 def ler_aba(nome_aba):
+    with st.spinner(f"⏳ Carregando {aba_nome}..."):
+        return ler_aba(aba_nome)
     """Lê dados da aba usando gspread"""
     estruturas = {
         "usuarios": ["id", "nome_completo", "login", "senha_hash"],
@@ -107,6 +94,13 @@ def ler_aba(nome_aba):
     except Exception as e:
         st.warning(f"⚠️ Erro ao ler '{nome_aba}': {e}")
         return pd.DataFrame(columns=colunas_esperadas)
+
+
+ 
+# ✨ FUNÇÃO AUXILIAR PARA LIMPAR CACHE
+def limpar_cache():
+    """Limpa o cache (use após criar/atualizar dados)"""
+    st.cache_data.clear()
 
 
 # --- HELPER para salvar com gspread ---
