@@ -313,6 +313,10 @@ if not st.session_state.logado:
                     salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
                     st.session_state.aba_ativa = 0
+
+
+                    import time
+                    time.sleep(1)
                     st.session_state.clear()
                     st.markdown(
                         """
@@ -322,10 +326,6 @@ if not st.session_state.logado:
                         """,
                         unsafe_allow_html=True
                     )
-
-
-                    import time
-                    time.sleep(1)
                     st.rerun()
 
     with tab_recuperacao:
@@ -384,6 +384,15 @@ if not st.session_state.logado:
                             # Aguardar e recarregar a página
                             import time
                             time.sleep(1)
+                            st.session_state.clear()
+                            st.markdown(
+                                """
+                                <script>
+                                window.location.href = "https://sirdec.streamlit.app/";
+                                </script>
+                                """,
+                                unsafe_allow_html=True
+                            )
                             st.rerun()
                         
                         except Exception as e:
