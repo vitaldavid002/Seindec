@@ -261,7 +261,7 @@ if not st.session_state.logado:
                 u_reg = st.text_input("Novo Usuário (sem espaços)")
                 s_reg = st.text_input("Nova Senha", type="password")
                 s_conf = st.text_input("Confirme a Senha", type="password")
-                c_reg = st.text_input("Código de Administrador")
+                c_reg = st.text_input("Código de Administrador", type="password")
                 if st.form_submit_button("Cadastrar"):
                     df_u = ler_aba("usuarios")
                     if not n_reg or not u_reg or not s_reg or not c_reg:
