@@ -166,11 +166,11 @@ def criar_sessao(usuario):
     st.session_state.usuario = usuario
 
 def verificar_sessao():
+    """Verifica se a sessão é válida pelo token do cookie"""
     if cookie_manager is None:
         return None
 
     token = cookie_manager.get("seindec_token")
-
     if not token:
         return None
 
@@ -186,8 +186,8 @@ def verificar_sessao():
         expiry_str = str(linha.iloc[0]["expiry"])
         expiry = datetime.strptime(expiry_str, "%Y-%m-%d %H:%M:%S")
 
+        # ✅ Se expirou, apenas retorna None (não tenta deletar)
         if datetime.now(FUSO_BR).replace(tzinfo=None) > expiry:
-            cookie_manager.delete("seindec_token")
             return None
     except Exception:
         return None
