@@ -202,8 +202,20 @@ def encerrar_sessao():
             df_s = ler_aba("sessoes")
             df_s_filtrado = df_s[df_s["token"] != token]
             salvar_dados("sessoes", df_s_filtrado)
-        except Exception as e:
-            st.warning(f"⚠️ Erro ao limpar sessão: {e}")
+        except Exception:
+            pass
+    
+    # ✅ Tenta deletar o cookie de forma segura
+    try:
+        cookie_manager.delete("seindec_token")
+    except Exception:
+        # Se falhar, apenas limpa a sessão mesmo assim
+        pass
+    
+    st.session_state.logado = False
+    st.session_state.usuario = None
+    st.cache_data.clear()
+    st.rerun()
     
     # ✅ Limpa a sessão sem tentar deletar o cookie
     st.session_state.logado = False
