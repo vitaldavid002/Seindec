@@ -245,62 +245,62 @@ if not st.session_state.logado:
 
     tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
         
-        with tab_login:
-            with st.form("form_login"):
-                u_log = st.text_input("Usuário")
-                s_log = st.text_input("Senha", type="password")
-                if st.form_submit_button("Entrar"):
-                    df_u = ler_aba("usuarios")
-                    if df_u.empty:
-                        st.error("Usuário ou senha incorretos.")
-                    else:
-                        # FIX: Usar coluna correta (senha_hash) e verificar com hash
-                        col_login = "login"
-                        col_senha = "senha_hash"
-                        
-                        user_row = df_u[df_u[col_login] == u_log]
-                        if not user_row.empty:
-                            hash_armazenado = str(user_row.iloc[0][col_senha])
-                            if verificar_senha(s_log, hash_armazenado):
-                                criar_sessao(u_log)
-                                st.success("Login realizado!")
-                                st.rerun()
-                            else:
-                                st.error("Usuário ou senha incorretos.")
+    with tab_login:
+        with st.form("form_login"):
+            u_log = st.text_input("Usuário")
+            s_log = st.text_input("Senha", type="password")
+            if st.form_submit_button("Entrar"):
+                df_u = ler_aba("usuarios")
+                if df_u.empty:
+                    st.error("Usuário ou senha incorretos.")
+                else:    
+                    # FIX: Usar coluna correta (senha_hash) e verificar com hash
+                    col_login = "login"
+                    col_senha = "senha_hash"
+                    
+                    user_row = df_u[df_u[col_login] == u_log]
+                    if not user_row.empty:
+                        hash_armazenado = str(user_row.iloc[0][col_senha])
+                        if verificar_senha(s_log, hash_armazenado):
+                            criar_sessao(u_log)
+                            st.success("Login realizado!")
+                            st.rerun()
                         else:
                             st.error("Usuário ou senha incorretos.")
-
-        with tab_cadastro:
-            with st.form("form_registro"):
-                st.info("Crie uma conta para acessar o sistema.")
-                n_reg = st.text_input("Nome Completo")
-                u_reg = st.text_input("Novo Usuário (sem espaços)")
-                s_reg = st.text_input("Nova Senha", type="password")
-                s_conf = st.text_input("Confirme a Senha", type="password")
-                c_reg = st.text_input("Código de Administrador", type="password")
-                if st.form_submit_button("Cadastrar"):
-                    df_u = ler_aba("usuarios")
-                    if not n_reg or not u_reg or not s_reg or not c_reg:
-                        st.warning("Preencha todos os campos.")
-                    elif n_reg in df_u["nome_completo"].values:
-                        st.error("Este nome já está cadastrado.")
-                    elif u_reg in df_u["login"].values:
-                        st.error("Este usuário já existe.")
-                    elif s_reg != s_conf:
-                        st.error("As senhas não coincidem.")
-                    elif c_reg != "procon@723_arap0":
-                        st.error("Código incorreto.")
                     else:
-                        novo_id = gerar_id_unico()
-                        # FIX: Usar hash_senha ao registrar
-                        novo_u = pd.DataFrame([{
-                            "id": novo_id, 
-                            "nome_completo": n_reg,
-                            "login": u_reg, 
-                            "senha_hash": hash_senha(s_reg)
-                        }])
-                        salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
-                        st.success("Usuário cadastrado com sucesso! Agora faça login.")
+                        st.error("Usuário ou senha incorretos.")
+
+    with tab_cadastro:
+        with st.form("form_registro"):
+            st.info("Crie uma conta para acessar o sistema.")
+            n_reg = st.text_input("Nome Completo")
+            u_reg = st.text_input("Novo Usuário (sem espaços)")
+            s_reg = st.text_input("Nova Senha", type="password")
+            s_conf = st.text_input("Confirme a Senha", type="password")
+            c_reg = st.text_input("Código de Administrador", type="password")
+            if st.form_submit_button("Cadastrar"):
+                df_u = ler_aba("usuarios")
+                if not n_reg or not u_reg or not s_reg or not c_reg:
+                    st.warning("Preencha todos os campos.")
+                elif n_reg in df_u["nome_completo"].values:
+                    st.error("Este nome já está cadastrado.")
+                elif u_reg in df_u["login"].values:
+                    st.error("Este usuário já existe.")
+                elif s_reg != s_conf:
+                    st.error("As senhas não coincidem.")
+                elif c_reg != "procon@723_arap0":
+                    st.error("Código incorreto.")
+                else:
+                    novo_id = gerar_id_unico()
+                    # FIX: Usar hash_senha ao registrar
+                    novo_u = pd.DataFrame([{
+                        "id": novo_id, 
+                        "nome_completo": n_reg,
+                        "login": u_reg, 
+                        "senha_hash": hash_senha(s_reg)
+                    }])
+                    salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
+                    st.success("Usuário cadastrado com sucesso! Agora faça login.")
 
     st.stop()
 
