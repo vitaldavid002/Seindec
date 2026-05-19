@@ -356,8 +356,9 @@ if not st.session_state.logado:
                             
                             st.success("✅ Senha atualizada com sucesso!")
                             st.info("Você será redirecionado para o login em 2 segundos...")
-                            
-                            # ✨ MODIFICADO: Setar flag para voltar ao login e limpar dados
+                            if st.success("✅ Senha atualizada com sucesso!") = True:
+                                cookie_manager.delete("seindec_token")
+                                
                             st.session_state.tab_ativa = "login"
                             
                             # Aguardar e recarregar a página
