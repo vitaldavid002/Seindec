@@ -245,9 +245,7 @@ if not st.session_state.logado:
 
     col1, col2, col3 = st.columns([1, 6, 1])
     with col2:
-        st.image("assets/logo.png", use_container_width=True)
-            
-    st.title("⚖️ Sistema Seindec Arapiraca")
+        st.image("assets/logo_login.png", use_container_width=True)
 
     tab_login, tab_cadastro = st.tabs(["🔐 Login", "📝 Cadastrar Usuário"])
         
