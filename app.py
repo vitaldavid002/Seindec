@@ -195,14 +195,20 @@ def verificar_sessao():
     return str(linha.iloc[0]["usuario"])
 
 def encerrar_sessao():
+    """Encerra a sessão e volta para login"""
     token = cookie_manager.get("seindec_token")
     if token:
-        df_s = ler_aba("sessoes")
-        salvar_dados("sessoes", df_s[df_s["token"] != token])
-
-    cookie_manager.delete("seindec_token")
+        try:
+            df_s = ler_aba("sessoes")
+            df_s_filtrado = df_s[df_s["token"] != token]
+            salvar_dados("sessoes", df_s_filtrado)
+        except Exception as e:
+            st.warning(f"⚠️ Erro ao limpar sessão: {e}")
+    
+    # ✅ Limpa a sessão sem tentar deletar o cookie
     st.session_state.logado = False
     st.session_state.usuario = None
+    st.cache_data.clear()
     st.rerun()
 
 # ✅ LAZY LOAD: só carrega se logado
