@@ -30,6 +30,9 @@ except Exception as e:
     st.error("❌ Erro na conexao com o Google Sheets. Verifique os Secrets.")
     st.stop()
 
+
+
+
 # --- FUNCOES DE HASHING DE SENHA ---
 def hash_senha(senha):
     """Hash da senha com salt usando SHA256"""
@@ -55,6 +58,22 @@ def _get_worksheet(nome_aba):
 
 # --- CACHE OTIMIZADO COM TTL E TAGS ---
 @st.cache_data(ttl=300)
+
+def ler_aba_otimizado(aba_nome):
+    """
+    Lê a aba do Google Sheets com:
+    - Spinner para esconder "run(ler_aba)"
+    - Cache para ser MUITO mais rápido
+    - TTL de 5 minutos
+    """
+    with st.spinner(f"⏳ Carregando {aba_nome}..."):
+        return ler_aba(aba_nome)
+ 
+# ✨ FUNÇÃO AUXILIAR PARA LIMPAR CACHE
+def limpar_cache():
+    """Limpa o cache (use após criar/atualizar dados)"""
+    st.cache_data.clear()
+    
 def ler_aba(nome_aba):
     """Lê dados da aba usando gspread"""
     estruturas = {
