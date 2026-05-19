@@ -243,7 +243,7 @@ if not st.session_state.logado:
     # Se não tem cookie ou sessão expirou, mostra formulário
     st.set_page_config(layout="centered")
 
-    col1, col2, col3 = st.columns([2, 3, 2])
+    col1, col2, col3 = st.columns([2, 4, 2])
     with col2:
         st.image("assets/logo_login1.png", use_container_width=True)
 
