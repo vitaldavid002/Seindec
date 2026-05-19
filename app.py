@@ -15,7 +15,7 @@ from google.oauth2.service_account import Credentials
 FUSO_BR = timezone(timedelta(hours=-3))
 
 # --- CONFIGURACAO DA PAGINA ---
-st.set_page_config(page_title="Seindec Arapiraca", page_icon="⚖️", layout="wide")
+st.set_page_config(page_title="SIRDEC Arapiraca", page_icon="⚖️", layout="wide")
 
 # Inicialize o CookieManager SEM o @st.cache_resource
 cookie_manager = stx.CookieManager()
@@ -727,5 +727,5 @@ st.markdown("""
         padding: 10px; 
     }
 </style>
-<footer>Seindec AL - PROCON Arapiraca</footer>
+<footer>SIRDEC - Sistema de Recuperação de Dados de Defesa do Consumidor</footer>
 """, unsafe_allow_html=True)
