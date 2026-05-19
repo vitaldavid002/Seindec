@@ -229,7 +229,7 @@ else:
 
 # --- VERIFICAR SESSÃO EXISTENTE ---
 if "tab_ativa" not in st.session_state:
-    st.session_state.tab_ativa = "login"
+    st.session_state.tab_ativa = 0
 
 if not st.session_state.logado:
     token_do_cookie = cookie_manager.get("seindec_token")
@@ -312,13 +312,7 @@ if not st.session_state.logado:
                     }])
                     salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
-                    st.markdown(
-                        """
-                        <meta http-equiv="refresh" content="2;url=https://sirdec.streamlit.app/">
-                        """,
-                        unsafe_allow_html=True
-                    )
-
+                    st.session_state.aba_ativa = 0
 
 
                     import time
@@ -367,12 +361,7 @@ if not st.session_state.logado:
                             
                             st.success("✅ Senha atualizada com sucesso! Agora faça login.")
                             st.info("Você será redirecionado para o login em 2 segundos...")
-                            st.markdown(
-                                """
-                                <meta http-equiv="refresh" content="2;url=https://sirdec.streamlit.app/">
-                                """,
-                                unsafe_allow_html=True
-                            )
+                            st.session_state.aba_ativa = 0
                             
                             # Aguardar e recarregar a página
                             import time
