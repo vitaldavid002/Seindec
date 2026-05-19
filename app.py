@@ -371,7 +371,6 @@ if not st.session_state.logado:
                             salvar_dados("usuarios", df_u)
                             
                             st.success("✅ Senha atualizada com sucesso! Agora faça login.")
-                            st.info("Você será redirecionado para o login em 2 segundos...")
                             st.session_state.aba_ativa = 0
                             st.session_state.clear()
                             st.markdown(
