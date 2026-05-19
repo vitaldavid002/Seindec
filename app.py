@@ -320,9 +320,9 @@ if not st.session_state.logado:
                     )
 
 
-                    st.session_state.tab_ativa = "login"
+
                     import time
-                    time.sleep(2)
+                    time.sleep(1)
                     st.rerun()
 
     with tab_recuperacao:
@@ -376,7 +376,7 @@ if not st.session_state.logado:
                             
                             # Aguardar e recarregar a página
                             import time
-                            time.sleep(2)
+                            time.sleep(1)
                             st.rerun()
                         
                         except Exception as e:
