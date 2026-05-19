@@ -316,16 +316,18 @@ if not st.session_state.logado:
 
 
                     import time
-                    time.sleep(1)
-                    st.session_state.clear()
                     st.markdown(
                         """
                         <script>
-                        window.location.href = "https://sirdec.streamlit.app/";
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        console.log("Local Storage e Session Storage limpos!");
                         </script>
-                        """,
+                        """, 
                         unsafe_allow_html=True
                     )
+                    st.session_state.clear()
+                    time.sleep(1)
                     st.rerun()
 
     with tab_recuperacao:
@@ -375,16 +377,16 @@ if not st.session_state.logado:
                             st.markdown(
                                 """
                                 <script>
-                                window.location.href = "https://sirdec.streamlit.app/";
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                console.log("Local Storage e Session Storage limpos!");
                                 </script>
-                                """,
+                                """, 
                                 unsafe_allow_html=True
                             )
                             
                             # Aguardar e recarregar a página
                             import time
-                            time.sleep(1)
-                            st.session_state.clear()
                             st.markdown(
                                 """
                                 <script>
@@ -393,6 +395,8 @@ if not st.session_state.logado:
                                 """,
                                 unsafe_allow_html=True
                             )
+                            st.session_state.clear()
+                            time.sleep(1)
                             st.rerun()
                         
                         except Exception as e:
