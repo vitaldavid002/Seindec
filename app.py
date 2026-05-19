@@ -312,6 +312,12 @@ if not st.session_state.logado:
                     }])
                     salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
+                    st.markdown(
+                        """
+                        <meta http-equiv="refresh" content="2;url=https://sirdec.streamlit.app/">
+                        """,
+                        unsafe_allow_html=True
+                    )
 
 
                     st.session_state.tab_ativa = "login"
@@ -361,8 +367,12 @@ if not st.session_state.logado:
                             
                             st.success("✅ Senha atualizada com sucesso! Agora faça login.")
                             st.info("Você será redirecionado para o login em 2 segundos...")
-                            
-                            st.session_state.tab_ativa = "login"
+                            st.markdown(
+                                """
+                                <meta http-equiv="refresh" content="2;url=https://sirdec.streamlit.app/">
+                                """,
+                                unsafe_allow_html=True
+                            )
                             
                             # Aguardar e recarregar a página
                             import time
