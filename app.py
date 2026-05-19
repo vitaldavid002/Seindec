@@ -309,6 +309,7 @@ if not st.session_state.logado:
                     salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
 
+                    cookie_manager.delete("seindec_token")
                     st.session_state.tab_ativa = "login"
                     import time
                     time.sleep(2)
