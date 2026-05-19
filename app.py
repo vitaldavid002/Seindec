@@ -314,6 +314,14 @@ if not st.session_state.logado:
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
                     st.session_state.aba_ativa = 0
                     st.session_state.clear()
+                    st.markdown(
+                        """
+                        <script>
+                        window.location.href = "https://sirdec.streamlit.app/";
+                        </script>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
 
                     import time
@@ -364,6 +372,14 @@ if not st.session_state.logado:
                             st.info("Você será redirecionado para o login em 2 segundos...")
                             st.session_state.aba_ativa = 0
                             st.session_state.clear()
+                            st.markdown(
+                                """
+                                <script>
+                                window.location.href = "https://sirdec.streamlit.app/";
+                                </script>
+                                """,
+                                unsafe_allow_html=True
+                            )
                             
                             # Aguardar e recarregar a página
                             import time
