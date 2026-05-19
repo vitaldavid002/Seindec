@@ -250,8 +250,12 @@ if not st.session_state.logado:
     with col2:
         st.image("assets/logo_login1.png", use_container_width=True)
 
-    tab_login, tab_cadastro, tab_recuperacao = st.tabs(["🔐 Login", "📝 Cadastrar Usuário", "🔑 Esqueci a Senha"])
-        
+    tab_login, tab_cadastro, tab_recuperacao = st.tabs([
+        "🔐 Login", 
+        "📝 Cadastrar Usuário",
+        "🔑 Esqueci a Senha"
+    ])
+    
     with tab_login:
         with st.form("form_login"):
             u_log = st.text_input("Usuário")
@@ -310,7 +314,6 @@ if not st.session_state.logado:
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
 
                     cookie_manager.delete("seindec_token")
-                    st.cache_data.clear()
                     st.session_state.tab_ativa = "login"
                     import time
                     time.sleep(2)
@@ -360,7 +363,6 @@ if not st.session_state.logado:
                             st.info("Você será redirecionado para o login em 2 segundos...")
                             
                             cookie_manager.delete("seindec_token")
-                            st.cache_data.clear()    
                             st.session_state.tab_ativa = "login"
                             
                             # Aguardar e recarregar a página
