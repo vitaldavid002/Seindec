@@ -228,6 +228,9 @@ else:
 # --- INITIALIZE SESSION STATE ---
 
 # --- VERIFICAR SESSÃO EXISTENTE ---
+if "tab_ativa" not in st.session_state:
+    st.session_state.tab_ativa = "login"
+
 if not st.session_state.logado:
     token_do_cookie = cookie_manager.get("seindec_token")
 
@@ -243,7 +246,7 @@ if not st.session_state.logado:
     # Se não tem cookie ou sessão expirou, mostra formulário
     st.set_page_config(layout="centered")
 
-    col1, col2, col3 = st.columns([2, 4, 2])
+    col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.image("assets/logo_login1.png", use_container_width=True)
 
@@ -306,6 +309,11 @@ if not st.session_state.logado:
                     salvar_dados("usuarios", pd.concat([df_u, novo_u], ignore_index=True))
                     st.success("Usuário cadastrado com sucesso! Agora faça login.")
 
+                    st.session_state.tab_ativa = "login"
+                    import time
+                    time.sleep(2)
+                    st.rerun()
+
     with tab_recuperacao:
         with st.form("form_recuperacao"):
             st.info("Redefina sua senha preenchendo os campos abaixo.")
@@ -348,6 +356,9 @@ if not st.session_state.logado:
                             
                             st.success("✅ Senha atualizada com sucesso!")
                             st.info("Você será redirecionado para o login em 2 segundos...")
+                            
+                            # ✨ MODIFICADO: Setar flag para voltar ao login e limpar dados
+                            st.session_state.tab_ativa = "login"
                             
                             # Aguardar e recarregar a página
                             import time
