@@ -562,7 +562,7 @@ def exibir_processo(p, df_p_master, df_h_master, chave):
         st.write("**🏢 Fornecedor(es):**")
         for nf, rs, cnpj in zip(lista_nf, lista_rs, lista_c):
             if nf.strip():
-                st.write(f"- {ns.strip()} ({rf.strip()}) | CNPJ: `{cnpj.strip()}`")
+                st.write(f"- {rs.strip()} ({nf.strip()}) | CNPJ: `{cnpj.strip()}`")
         st.write(f"**📝 Anotações:** {p.get('anotacoes','')}")
 
     st.divider()
