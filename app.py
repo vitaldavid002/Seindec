@@ -57,7 +57,7 @@ def _get_worksheet(nome_aba):
     return sheet.worksheet(nome_aba)
 
 # --- CACHE OTIMIZADO COM TTL E TAGS ---
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=300, show_spinner=False)
     
 def ler_aba(nome_aba):
     """Lê dados da aba usando gspread"""
