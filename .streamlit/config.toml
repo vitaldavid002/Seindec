@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#ff0000"          # Vermelho
+backgroundColor = "#000000"       # Preto puro
+secondaryBackgroundColor = "#1a1a1a"  # Cinza muito escuro
+textColor = "#ffffff"             # Branco
+font = "sans serif"
